@@ -33,6 +33,7 @@ $(TESTS): prepare
 	log="$(LOGDIR)/$${base%.sh}.log"; \
 	start=$$(date +%s); \
 	if env -i LC_CTYPE=C.UTF-8 MallocNanoZone=0 \
+	    TEST_TMUX="$$(readlink -f ../oxtmux)" \
 	    sh -x "$@" >"$$log" 2>&1; then \
 		end=$$(date +%s); \
 		rm -f "$$log"; \

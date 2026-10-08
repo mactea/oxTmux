@@ -1,12 +1,13 @@
 # Obvious program stuff.
-bin_PROGRAMS = tmux
+# oxTmux: the program is installed as oxtmux.
+bin_PROGRAMS = oxtmux
 CLEANFILES = tmux.1.mdoc tmux.1.man cmd-parse.c
 
 # Distribution tarball options.
 EXTRA_DIST = \
 	CHANGES README COPYING example_tmux.conf \
 	osdep-*.c mdoc2man.awk tmux.1
-dist_EXTRA_tmux_SOURCES = compat/*.[ch]
+dist_EXTRA_oxtmux_SOURCES = compat/*.[ch]
 
 # Preprocessor flags.
 AM_CPPFLAGS += @XOPEN_DEFINES@ \
@@ -87,7 +88,7 @@ AM_CPPFLAGS += -DTMUX_SOCK_PERM=0
 endif
 
 # List of sources.
-dist_tmux_SOURCES = \
+dist_oxtmux_SOURCES = \
 	alerts.c \
 	arguments.c \
 	attributes.c \
@@ -232,26 +233,26 @@ dist_tmux_SOURCES = \
 	window.c \
 	xmalloc.c \
 	xmalloc.h
-nodist_tmux_SOURCES = osdep-@PLATFORM@.c
+nodist_oxtmux_SOURCES = osdep-@PLATFORM@.c
 
 # Add compat file for forkpty.
 if NEED_FORKPTY
-nodist_tmux_SOURCES += compat/forkpty-@PLATFORM@.c
+nodist_oxtmux_SOURCES += compat/forkpty-@PLATFORM@.c
 endif
 
 # Add compat file for systemd.
 if HAVE_SYSTEMD
-nodist_tmux_SOURCES += compat/systemd.c
+nodist_oxtmux_SOURCES += compat/systemd.c
 endif
 
 # Add compat file for utf8proc.
 if HAVE_UTF8PROC
-nodist_tmux_SOURCES += compat/utf8proc.c
+nodist_oxtmux_SOURCES += compat/utf8proc.c
 endif
 
 # Enable sixel support.
 if ENABLE_SIXEL
-dist_tmux_SOURCES += image.c image-sixel.c
+dist_oxtmux_SOURCES += image.c image-sixel.c
 endif
 
 # Add bits for fuzzing if enabled.
@@ -264,17 +265,17 @@ check_PROGRAMS = \
 	fuzz/layout-fuzzer \
 	fuzz/json-fuzzer
 fuzz_input_fuzzer_LDFLAGS = $(FUZZING_LIBS)
-fuzz_input_fuzzer_LDADD = $(LDADD) $(tmux_OBJECTS)
+fuzz_input_fuzzer_LDADD = $(LDADD) $(oxtmux_OBJECTS)
 fuzz_cmd_parse_fuzzer_LDFLAGS = $(FUZZING_LIBS)
-fuzz_cmd_parse_fuzzer_LDADD = $(LDADD) $(tmux_OBJECTS)
+fuzz_cmd_parse_fuzzer_LDADD = $(LDADD) $(oxtmux_OBJECTS)
 fuzz_format_fuzzer_LDFLAGS = $(FUZZING_LIBS)
-fuzz_format_fuzzer_LDADD = $(LDADD) $(tmux_OBJECTS)
+fuzz_format_fuzzer_LDADD = $(LDADD) $(oxtmux_OBJECTS)
 fuzz_style_fuzzer_LDFLAGS = $(FUZZING_LIBS)
-fuzz_style_fuzzer_LDADD = $(LDADD) $(tmux_OBJECTS)
+fuzz_style_fuzzer_LDADD = $(LDADD) $(oxtmux_OBJECTS)
 fuzz_layout_fuzzer_LDFLAGS = $(FUZZING_LIBS)
-fuzz_layout_fuzzer_LDADD = $(LDADD) $(tmux_OBJECTS)
+fuzz_layout_fuzzer_LDADD = $(LDADD) $(oxtmux_OBJECTS)
 fuzz_json_fuzzer_LDFLAGS = $(FUZZING_LIBS)
-fuzz_json_fuzzer_LDADD = $(LDADD) $(tmux_OBJECTS)
+fuzz_json_fuzzer_LDADD = $(LDADD) $(oxtmux_OBJECTS)
 endif
 
 # Install tmux.1 in the right format.
@@ -288,8 +289,8 @@ install-exec-hook:
 	fi
 	$(mkdir_p) $(DESTDIR)$(mandir)/man1
 	$(INSTALL_DATA) $(srcdir)/tmux.1.@MANFORMAT@ \
-		$(DESTDIR)$(mandir)/man1/tmux.1
+		$(DESTDIR)$(mandir)/man1/oxtmux.1
 
 # And uninstall it.
 uninstall-hook:
-	rm -f $(DESTDIR)$(mandir)/man1/tmux.1
+	rm -f $(DESTDIR)$(mandir)/man1/oxtmux.1

@@ -24,4 +24,5 @@ fuzz/*-fuzzer
 regress/logs/
 tags
 tmux
+oxtmux
 tmux.1.*

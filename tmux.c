@@ -266,7 +266,8 @@ make_label(const char *label, char **cause)
 		return (NULL);
 	}
 
-	xasprintf(&base, "%s/tmux-%ld", path, (long)uid);
+	/* oxTmux: own socket directory, so it never talks to a tmux server. */
+	xasprintf(&base, "%s/oxtmux-%ld", path, (long)uid);
 	free(path);
 	if (mkdir(base, S_IRWXU) != 0 && errno != EEXIST) {
 		xasprintf(cause, "couldn't create directory %s (%s)", base,
@@ -496,7 +497,7 @@ main(int argc, char **argv)
 		case 'h':
 			usage(0);
 		case 'V':
-			printf("tmux %s\n", getversion());
+			printf("oxtmux %s\n", getversion()); /* oxTmux */
 			exit(0);
 		case 'l':
 			flags |= CLIENT_LOGIN;

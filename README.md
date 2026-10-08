@@ -19,8 +19,12 @@ sudo apt-get install autoconf automake bison pkg-config libevent-dev libncurses-
 sh autogen.sh
 ./configure
 make
-./tmux -V
+./oxtmux -V
 ```
+
+程序名是 `oxtmux`，`make install` 默认装到 `/usr/local/bin/oxtmux`，man 页是 `oxtmux.1`。
+它和系统自带的 tmux 互不干扰：socket 目录是 `/tmp/oxtmux-<UID>`，不和 tmux 的 `/tmp/tmux-<UID>` 共用。
+配置文件和 tmux 相同（`~/.tmux.conf` 等）。
 
 ## 测试
 
@@ -29,6 +33,8 @@ cd regress
 make                 # 全部回归测试（耗时较长）
 make buffers.sh      # 单个测试
 ```
+
+单独执行某个测试脚本时，要指定程序路径：`TEST_TMUX=$(readlink -f ../oxtmux) sh buffers.sh`。
 
 ## 与上游同步
 

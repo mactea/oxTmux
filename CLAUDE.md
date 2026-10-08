@@ -22,22 +22,32 @@ oxTmux 是 tmux 的增强版本（fork）。本仓库带有 tmux 的完整上游
 ```sh
 sh autogen.sh && ./configure && make   # 首次，或改了 configure.ac / Makefile.am 之后
 make                                   # 平时增量构建
-./tmux -V
+./oxtmux -V
 cd regress && make buffers.sh          # 跑单个回归测试
 cd regress && make                     # 跑全部回归测试，耗时长
 ```
 
-- 构建产物（`*.o`、`tmux`、`Makefile`、`configure` 等）已被 `.gitignore` 忽略。
-- 测试 tmux 时用独立 socket（`./tmux -L oxtest ...` 或 `-S <路径>`），**不要碰用户默认的 `default` socket**。
-  跑完后 `./tmux -L oxtest kill-server`。
+- 构建产物（`*.o`、`oxtmux`、`Makefile`、`configure` 等）已被 `.gitignore` 忽略。
+- 测试时用独立 socket（`./oxtmux -L oxtest ...`），跑完后 `./oxtmux -L oxtest kill-server`。
+- 单独跑测试脚本要带 `TEST_TMUX=$(readlink -f ../oxtmux)`；脚本默认找 `../tmux`，`regress/Makefile` 已经替你传了。
 - `regress/alerts.sh` 单独跑超过 60 秒，写超时时注意。
+
+## 改名：程序叫 oxtmux
+
+已改动的地方（合并上游冲突时注意保留）：
+
+- `Makefile.am`：`bin_PROGRAMS = oxtmux`，所有 `tmux_SOURCES` / `tmux_OBJECTS` 变量改成 `oxtmux_` 前缀；man 页安装成 `oxtmux.1`。
+  上游往 `dist_tmux_SOURCES` 加文件时，要加到 `dist_oxtmux_SOURCES`。
+- `tmux.c`：socket 目录是 `oxtmux-<UID>`，`-V` 输出 `oxtmux <版本>`。
+- `regress/Makefile`：传 `TEST_TMUX` 指向 `../oxtmux`。
+- 没改：配置文件路径（仍读 `~/.tmux.conf`）、`$TMUX` 环境变量、`configure.ac` 的包名、源文件名。
 
 ## 修改原则
 
 - **尽量少改上游文件**。改动越分散，合并上游时冲突越多。
   - 新功能优先放进新文件（如 `ox-<功能>.c`），上游文件里只加最少的挂接代码。
   - 在上游文件里改动时，加 `/* oxTmux: ... */` 注释，方便合并冲突时识别。
-- 新增 `.c` 文件要加进 `Makefile.am` 的 `dist_tmux_SOURCES`，然后重新跑 `sh autogen.sh && ./configure`。
+- 新增 `.c` 文件要加进 `Makefile.am` 的 `dist_oxtmux_SOURCES`，然后重新跑 `sh autogen.sh && ./configure`。
 - 不要改 `.github/workflows/` 下的上游 workflow；它们有 `github.repository == 'tmux/tmux'` 条件，在本仓库不会运行。
 
 ## tmux 代码约定
@@ -60,5 +70,5 @@ cd regress && make                     # 跑全部回归测试，耗时长
 
 ## 提交
 
-- 本仓库还没有配置 git 提交身份（`user.name` / `user.email`）。提交前先问用户，不要猜。
+- 本仓库的提交身份已在 local 配置：`cm <mactes@gmail.com>`。
 - 提交信息结尾按会话里给的署名行写。
